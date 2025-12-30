@@ -3,6 +3,7 @@
 > <br>
 > Google Vision/ChatGPT API로 정교한 메타데이터를 추출하고, Elasticsearch의 가중치 쿼리와 Redis SortedSet을 결합하여 대규모 데이터 환경에서도 빠른 검색과 실시간 트렌드를 제공합니다.
 
+<br>
 
 ## 🛠 Architecture
 <img src="SGBG-architecture.png" width="800" alt="SGBG Architecture">
