@@ -51,7 +51,7 @@ public class OpenaiServiceImpl implements OpenaiService {
                 imageUrl = convertWebPToJpegUrl(imageUrl);
             }
 
-            // OpenAI API 요청: Keywords 추출 -> 비동기
+            // OpenAI API 요청: Keywords 추출 -> 병렬
             CompletableFuture<List<String>> keywordsFuture = CompletableFuture.supplyAsync(() -> {
                 try {
                     return requestKeywords(imageUrlStr);
@@ -61,7 +61,7 @@ public class OpenaiServiceImpl implements OpenaiService {
                 }
             }, executorService);
 
-            // OpenAI API 요청: Labels 번역 -> 비동기
+            // OpenAI API 요청: Labels 번역 -> 병렬
             CompletableFuture<List<String>> labelsFuture = CompletableFuture.supplyAsync(() -> {
                 try {
                     return requestLabels(labels);
@@ -71,7 +71,7 @@ public class OpenaiServiceImpl implements OpenaiService {
                 }
             }, executorService);
 
-            // 두 비동기 작업이 완료될 때까지 기다림
+            // 두 병렬 작업이 완료될 때까지 기다림
             CompletableFuture.allOf(keywordsFuture, labelsFuture).join();
 
             // 결과 가져오기
