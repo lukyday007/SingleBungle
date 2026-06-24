@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -59,7 +60,7 @@ public class OpenaiServiceImpl implements OpenaiService {
                     log.warn(">>> Keywords 분석 실패: {}", e.getMessage());
                     return null; // 실패 시 null 반환
                 }
-            }, executorService);
+            }, executorService).orTimeout(15, TimeUnit.SECONDS);
 
             // OpenAI API 요청: Labels 번역 -> 병렬
             CompletableFuture<List<String>> labelsFuture = CompletableFuture.supplyAsync(() -> {
@@ -69,7 +70,7 @@ public class OpenaiServiceImpl implements OpenaiService {
                     log.warn(">>> Labels 번역 실패: {}", e.getMessage());
                     return null; // 실패 시 null 반환
                 }
-            }, executorService);
+            }, executorService).orTimeout(15, TimeUnit.SECONDS);
 
             // 두 병렬 작업이 완료될 때까지 기다림
             CompletableFuture.allOf(keywordsFuture, labelsFuture).join();
