@@ -24,6 +24,7 @@ import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -113,7 +114,7 @@ public class GoogleVisionServiceImpl implements GoogleVisionService {
                 log.error(">>> SafeSearch 검증 중 오류 발생: {}", e.getMessage(), e);
                 throw new RuntimeException("SafeSearch 검증 실패", e);
             }
-        });
+        }).orTimeout(10, TimeUnit.SECONDS);
 
         CompletableFuture<List<String>> labelsFuture = CompletableFuture.supplyAsync(() -> {
             try {
@@ -122,7 +123,7 @@ public class GoogleVisionServiceImpl implements GoogleVisionService {
                 log.error(">>> 라벨 검출 중 오류 발생: {}", e.getMessage(), e);
                 throw new RuntimeException("라벨 검출 실패", e);
             }
-        });
+        }).orTimeout(10, TimeUnit.SECONDS);
 
         // 결과 병합: SafeSearch와 라벨 검출 결과를 확인하고 반환
         try {
